@@ -1,1 +1,17 @@
-En vous appuyant sur les empreintes, repérer les doublons parmi les fichiers qui sont dans l'arborescence. Attention les doublons ont le même type de format, mais n'ont pas forcement les mêmes noms, ce sont des images identiques mais qui ont des noms de fichiers différents.
+#!/bin/bash
+file1="empreintes_sans_doublon"
+file2="liste_doublons"
+> "$file1"
+> "$file2"
+for img in $(find rep_etud/ -type f -exec file {} \; | grep -i 'image' | cut -d: -f 1)
+do
+fic_empre=$(shasum "$img")
+if ! grep -q "$fic_empre" "$file1"; then
+echo "$fic_empre" >> "$file1"
+else 
+echo "$fic_empre" >> "$file2"
+fi
+done
+cat "$file2"
+wc -l "$file1"
+wc -l "$file2"
